@@ -1,9 +1,13 @@
 /* global Phaser */
 
 const gameConfig = {
-  type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  autoFocus: false,
+  scale: {
+    width: 800,
+    height: 600,
+    mode: Phaser.Scale.FIT,
+    parent: 'parent'
+  },
   scene: {
     preload,
     create,
@@ -18,15 +22,15 @@ const gameConfig = {
 };
 
 function preload() {
-  this.load.image('sky', 'https://cdn.glitch.global/5d1bb0e8-5e80-4014-a526-5d6763e0b6a5/phaser1.png?v=1651689794274');
-  this.load.image('logo', '/phaser3-logo.png');
-  this.load.image('red', '/red.png');
+  this.load.image('space', 'https://cdn.glitch.global/5d1bb0e8-5e80-4014-a526-5d6763e0b6a5/space2.png?v=1651689827462');
+  this.load.image('logo', 'https://cdn.glitch.global/5d1bb0e8-5e80-4014-a526-5d6763e0b6a5/phaser1.png?v=1651689794274');
+  this.load.image('yellow', 'https://cdn.glitch.global/5d1bb0e8-5e80-4014-a526-5d6763e0b6a5/yellow.png?v=1651689856507');
 }
 
 function create() {  
-  this.add.image(400, 300, 'sky');
+  this.add.image(400, 300, 'space');
 
-  const particles = this.add.particles('red');
+  const particles = this.add.particles('yellow');
 
   const emitter = particles.createEmitter({
     speed: 100,
@@ -45,5 +49,7 @@ function create() {
 
 function update() {
 }
+
+document.getElementById('version').innerText = `Phaser v${Phaser.VERSION}`
 
 new Phaser.Game(gameConfig);
