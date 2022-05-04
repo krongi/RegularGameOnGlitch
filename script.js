@@ -1,16 +1,49 @@
 /* global Phaser */
 
-new Phaser.Game({
-  parent: 'parent',
+const gameConfig = {
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
   scene: {
-    create: function () {
-      this.add.text(0, 0, "Hello 🌎", { font: '72px sans-serif' });
+    preload,
+    create,
+    update
+  },
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 200 }
     }
   }
-});
+};
 
-/*
-this.load.image('sky', 'assets/skies/space3.png');
-this.load.image('logo', 'assets/sprites/phaser3-logo.png');
-this.load.image('red', 'assets/particles/red.png');
-*/
+function preload() {
+  this.load.image('sky', 'https://cdn.glitch.global/5d1bb0e8-5e80-4014-a526-5d6763e0b6a5/phaser1.png?v=1651689794274');
+  this.load.image('logo', '/phaser3-logo.png');
+  this.load.image('red', '/red.png');
+}
+
+function create() {  
+  this.add.image(400, 300, 'sky');
+
+  const particles = this.add.particles('red');
+
+  const emitter = particles.createEmitter({
+    speed: 100,
+    scale: { start: 1, end: 0 },
+    blendMode: 'ADD'
+  });
+
+  const logo = this.physics.add.image(400, 100, 'logo');
+
+  logo.setVelocity(100, 200);
+  logo.setBounce(1, 1);
+  logo.setCollideWorldBounds(true);
+
+  emitter.startFollow(logo);
+}
+
+function update() {
+}
+
+new Phaser.Game(gameConfig);
