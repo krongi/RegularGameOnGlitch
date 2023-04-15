@@ -30,9 +30,7 @@ function preload() {
 function create() {  
   this.add.image(400, 300, 'space');
 
-  const particles = this.add.particles('yellow');
-
-  const emitter = particles.createEmitter({
+  const emitter = this.add.particles(0, 0, 'yellow', {
     speed: 100,
     scale: { start: 1, end: 0 },
     blendMode: 'ADD'
