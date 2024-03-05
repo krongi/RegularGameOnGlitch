@@ -2,6 +2,7 @@
 
 const gameConfig = {
   autoFocus: false,
+  roundPixels: false,
   scale: {
     width: 800,
     height: 600,
