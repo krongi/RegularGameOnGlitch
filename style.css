@@ -1,6 +1,12 @@
 html {
-  background: silver;
+  background: light-grey;
+  align-content: center;
+  text-align: center;
 
+}
+div {
+  border-radius: 4px;
+  padding: 12px; 
 }
 header {
   background: yellow;
@@ -34,10 +40,12 @@ body {
   flex: 1 1 0;
   width: 100%;
   height: 100%;
+  align-content: center;
 /*   outline: thin dotted red;  */
 }
 
 #game {
   outline: 4px solid cyan;
   border-radius: 10px;
+  position: center;
 }
