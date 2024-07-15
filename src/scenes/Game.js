@@ -287,7 +287,7 @@ export default class Game extends Phaser.Scene {
          
         /**Create the "HUD" and the on death message, the on death message is
          * set below everything else, it will be displayed on death */
-        this.placeText = this.add.text(10, 0, 'Health ' + this.player.getData('health') + "\n" + 'Magic ' + this.player.getData('magic')  + ' Gold ' + this.player.getData('gold') + '\n' + 'Wood ' + this.player.getData('wood') + '   ' + 'Stone ' + this.player.getData('stone'))
+        this.placeText = this.add.text(10, 10, 'Health ' + this.player.getData('health') + "\n" + 'Magic ' + this.player.getData('magic')  + ' Gold ' + this.player.getData('gold') + '\n' + 'Wood ' + this.player.getData('wood') + '   ' + 'Stone ' + this.player.getData('stone'))
             .setScrollFactor(0,0)
             .setBackgroundColor('black')
             .setColor('grey')
