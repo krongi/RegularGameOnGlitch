@@ -19,7 +19,8 @@ to this section's matching END comment to see page-specific styles.
   --color-bg: #3c3e42;
   --color-text-main: #000000;
   --color-primary: #FFFF00;
-  --wrapper-height: 87vh;
+/*   --wrapper-height: 87vh; */
+  --wrapper-height: "device-height";
   --image-max-width: 300px;
   --image-margin: 3rem;
   --font-family: "HK Grotesk";
@@ -209,8 +210,8 @@ h2 {
 
 
 #parent {
-  margin-top: 10px;
-  flex: 1 1 0;
+/*   margin-top: 10px; */
+  flex: 0 0 0;
   width: 100%;
   height: 80%;
   justify-content: center;
