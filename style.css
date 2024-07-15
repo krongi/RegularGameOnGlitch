@@ -6,7 +6,8 @@ html {
 }
 div {
   border-radius: 14px;
-  padding: 12px; 
+  padding: 12px;
+  margin: 8px;
 }
 header {
   background: #575a5e;
@@ -38,7 +39,7 @@ body {
 #parent {
   flex: 1 1 0;
   width: 100%;
-  height: 100%;
+  height: 80%;
   align-content: center;
 /*   outline: thin dotted red;  */
 }
