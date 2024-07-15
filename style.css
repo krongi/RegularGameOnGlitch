@@ -1,15 +1,15 @@
 html {
-  background: light-grey;
+  background: #3c3e42;
   align-content: center;
   text-align: center;
 
 }
 div {
-  border-radius: 4px;
+  border-radius: 14px;
   padding: 12px; 
 }
 header {
-  background: yellow;
+  background: #575a5e;
 /*   display: fill; */
   padding: 15px;
   margin: 12px;
@@ -18,9 +18,8 @@ header {
 }
 
 h1 {
-  color: red;
+  color: #35ccb0;
   text-align: center;
-  background: cyan;
   border-radius: 5px;
   
 }
@@ -30,8 +29,8 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 0;
-  padding: 0;
+  margin: 50px;
+  padding: 50px;
   overflow: hidden;
   font-family: system-ui;
 }
@@ -45,7 +44,5 @@ body {
 }
 
 #game {
-  outline: 4px solid cyan;
   border-radius: 10px;
-  position: center;
 }
