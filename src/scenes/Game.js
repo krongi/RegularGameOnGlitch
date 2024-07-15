@@ -54,17 +54,16 @@ export default class Game extends Phaser.Scene {
     preload() {
 
         /**Load images and other assets to be used by this scene */
-        this.load.spritesheet('blueRocketGuy', '../assets/blueRocketGuy.png', {frameWidth:32, frameHeight: 32})
-        this.load.spritesheet('redSoldier', '../assets/redSoldiers.png', {frameWidth: 64, frameHeight: 64});
-        this.load.spritesheet('blueSoldier', '../assets/blueSoldiers.png', {frameWidth: 64, frameHeight: 64});
-        this.load.atlas('laser', '../assets/lasers.png', '../assets/lasers.json');
-        this.load.atlas('worldTilesAtlas', '../assets/worldTiles.png', '../assets/worldTiles.json');
-        this.load.atlas('bullets', '../assets/lasers.png', '../assets/lasers.json');
-        this.load.spritesheet('worldTiles', '../assets/worldTiles.png', {frameWidth: 64, frameHeight: 64})
-        this.load.image('laser1','../assets/laser1.png');
-        this.load.image('tree', '../assets/tree.png');
-        this.load.image('mountain', '../assets/mountain.png');
-
+        this.load.spritesheet('blueRocketGuy', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/blueRocketGuy.png?v=1721074668968', {frameWidth:32, frameHeight: 32})
+        this.load.spritesheet('redSoldier', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/redSoldiers.png?v=1721074671398', {frameWidth: 64, frameHeight: 64});
+        this.load.spritesheet('blueSoldier', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/blueSoldiers.png?v=1721074669238', {frameWidth: 64, frameHeight: 64});
+        this.load.atlas('laser', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/lasers.png?v=1721074670922', '../assets/lasers.json');
+        this.load.atlas('worldTilesAtlas', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/worldTiles.png?v=1721074672161', '../assets/worldTiles.json');
+        this.load.atlas('bullets', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/lasers.png?v=1721074670922', '../assets/lasers.json');
+        this.load.spritesheet('worldTiles', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/worldTiles.png?v=1721074672161', {frameWidth: 64, frameHeight: 64})
+        this.load.image('laser1','https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/laser1.png?v=1721074670167');
+        this.load.image('tree', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/tree.png?v=1721074671589');
+        this.load.image('mountain', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/mountain.png?v=1721074671154');
     }
         
     create() {
