@@ -227,6 +227,7 @@ export default class Game extends Phaser.Scene {
         
         /* Set main camera to center on and follow the player*/
         this.cameras.main.centerOn(this.player.x, this.player.y);
+        this.cameras.main.deadzone.
         this.cameras.main.startFollow(this.player);
 
         /* Add colliders for game objects*/
@@ -308,7 +309,7 @@ export default class Game extends Phaser.Scene {
         this.companionArea.setPosition(this.player.getCenter().x, this.player.getCenter().y)
         
         /**Update the "HUD" on the screen with relevant info*/
-        if (this.player) {
+        if (this.player.isAlive) {
             this.placeText.destroy()
             this.placeText = this.add.text(0, 0, 'Health ' + this.player.getData('health') + "\n" + 'Magic ' + this.player.getData('magic')  + ' Gold ' + this.player.getData('gold')
              + '\n' + 'Wood ' + this.player.getData('wood') + '   ' + 'Stone ' + this.player.getData('stone'))
@@ -369,7 +370,8 @@ export default class Game extends Phaser.Scene {
          * scene trying to set velocity to  0
          */
         if (!this.player.isAlive) {
-            this.placeText.setDepth(-1)
+            this.placeText.destroy()
+            // this.placeText.setDepth(-1)
             this.deadMessage.setDepth(10)
             this.player.destroy()
             this.scene.pause()

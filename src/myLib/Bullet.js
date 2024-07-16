@@ -1,7 +1,6 @@
 import Phaser from "../lib/phaser.js";
 import Game from "../scenes/Game.js"
 
-
 export default class Bullet extends Phaser.Physics.Arcade.Image {
     
     constructor(scene, x, y, imageKey) {
