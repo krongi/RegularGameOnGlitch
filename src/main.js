@@ -19,9 +19,9 @@ const gameConfig = ({
             // gravity: {
             //     y: 200
             // },
-            // debug: true
-        }
-        
+            debug: true
+        },
+    
     }})
 const STATE_DEAD = 1
 const STATE_ALIVE =0

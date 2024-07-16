@@ -85,9 +85,3 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.location = [this.body.x, this.body.y]
     }
 }
-
-export class EnemyBullet extends Bullet {
-    constructor(scene, x, y, imageKey) {
-        super(scene, x, y, imageKey = 'laser1')
-    }
-}

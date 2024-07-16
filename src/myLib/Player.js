@@ -25,8 +25,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         return [this.x, this.y]
     }
 
-    grabResource(resourceGrabbed, amount) {
-        this.incData(resourceGrabbed, amount)  
+    changeResourceQuantity(resource, changedAmount) {
+        this.incData(resource, changedAmount)  
     }
 
     healthDown(dropMax, dropMin = 0 ) {

@@ -6,6 +6,8 @@ import Mountain from "../myLib/Mountain.js"
 import Player from "../myLib/Player.js";
 import Enemy from "../myLib/Enemy.js";
 import EnemyBullet from "../myLib/EnemyBullet.js"
+import resourcer from "../myLib/functions.js"
+import WorldFeature from "../myLib/WorldFeature.js";
 
 // hardware
 let mousePointer;
@@ -13,7 +15,7 @@ let mousePointer;
 // projectiles
 let bullet;
 
-// gropus
+// groups
 let bullets;
 let myBullets;
 let enemyBullets;
@@ -22,6 +24,8 @@ let enemyBullet;
 let mountains
 let resources;
 let trees
+let worldFeatures;
+let worldFeature;
 
 
 //sprites and images
@@ -30,6 +34,8 @@ let player;
 let companion;
 let mountain;
 let enemy;
+let mountainImage;
+let treeImage;
 
 // MISC
 let checkTime = 0
@@ -62,8 +68,9 @@ export default class Game extends Phaser.Scene {
         this.load.atlas('bullets', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/lasers.png?v=1721074670922', '../assets/lasers.json');
         this.load.spritesheet('worldTiles', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/worldTiles.png?v=1721074672161', {frameWidth: 64, frameHeight: 64})
         this.load.image('laser1','https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/laser1.png?v=1721074670167');
-        this.load.image('tree', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/tree.png?v=1721074671589');
-        this.load.image('mountain', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/mountain.png?v=1721074671154');
+        this.treeImage = this.load.image('tree', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/tree.png?v=1721074671589');
+        this.mountainImage = this.load.image('mountain', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/mountain.png?v=1721074671154');
+
     }
         
     create() {
@@ -128,18 +135,18 @@ export default class Game extends Phaser.Scene {
 
         /* Add the inputs for the game here. Currently will only be using certain keys and 
         some mouse */
-        mousePointer = this.input.activePointer;
+        this.mousePointer = this.input.activePointer;
         this.w = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         this.s = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.a = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.d = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
         this.e = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
         this.spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
+        
         /* Add tile sprites to game for background etc*/
         this.add.tileSprite(800, 800, 2400, 2400, 'worldTiles', 15).setOrigin(0.5, 0.5);
         this.add.tileSprite(800, 800, 1600, 1600, 'worldTiles', 6).setOrigin(0.5, 0.5);
-        
+
         /* Create groups for certain game objects*/
         bullets = this.physics.add.staticGroup({
             classType: Bullet,
@@ -168,6 +175,14 @@ export default class Game extends Phaser.Scene {
             runChildUpdate: true
         })
 
+        worldFeatures = this.add.group({
+            classType: WorldFeature,
+            active: true,
+            setVisible: true,
+            
+
+        })
+
         resources = this.add.group({
                 active: false,
                 setVisible: false,
@@ -192,28 +207,34 @@ export default class Game extends Phaser.Scene {
         /**Populate map with collidable objects that will hold resources later */
         for (let x = 0; x < 75; x++) {
             mountain = mountains.get(Phaser.Math.Between(40, 1400), Phaser.Math.Between(40, 1400))
+            mountain.name = mountain.imageKey + x.toString
             mountain.setMass(200)
-            mountain.setBodySize(mountain.width * 0.5, mountain.height * 0.5)
-            mountain.body.setCircle(mountain.body.width * 0.5, mountain.body.height * 0.5)
+            mountain.body.isCircle = true
+            mountain.getName()
+
+            // mountain.setBodySize(mountain.width * 0.5, mountain.height * 0.5)
+            // mountain.body.setCircle(mountain.body.width * 0.5, mountain.body.height * 0.5)
 
             tree = trees.get(Phaser.Math.Between(40, 1400), Phaser.Math.Between(40, 1400))
+            tree.name = tree.imageKey + x.toString
             tree.setMass(200)
-            tree.setBodySize(tree.width * 0.5, tree.height * 0.5)
-            tree.body.setCircle(tree.body.width * 0.5, tree.body.height * 0.5)
-            resources.add(mountain)
-            resources.add(tree)           
+            tree.body.isCircle = true
+            tree.getName()
+            // tree.setBodySize(tree.width * 0.5, tree.height * 0.5)
+            // tree.body.setCircle(tree.body.width * 0.5, tree.body.height * 0.5)
+            worldFeatures.add(mountain)
+            worldFeatures.add(tree)
             
         }   
         /**Create enemies */ 
         for (let x = 0; x < 10; x++) {
-            // enemy = this.enemies.get(Phaser.Math.Between(1300, 1400), Phaser.Math.Between(1300, 1400),'blueSoldier', resources, this.player)
             enemy = new Enemy(this, Phaser.Math.Between(1300, 1400), Phaser.Math.Between(1300, 1400),'blueSoldier', resources, this.player)
-            // enemy.bulletPhysicsGroup = enemyBullets
             enemy.target = this.player
             enemy.setName("Enemy" + x.toString())
             enemy.advance(this.player)
             enemy.setActive(true).setVisible(true).setInteractive()
             this.enemies.add(enemy)
+            
             
         }
         
@@ -228,55 +249,80 @@ export default class Game extends Phaser.Scene {
         /* Set main camera to center on and follow the player*/
         this.cameras.main.centerOn(this.player.x, this.player.y);
         this.cameras.main.startFollow(this.player);
+        this.cameras.main.setDeadzone(200, 100)
 
         /* Add colliders for game objects*/
         this.physics.add.collider(this.player, resources, function (player, resource) {
             
         });        
 
-        this.physics.add.collider(enemy, resources, function (player, resource) {
+        this.physics.add.collider(this.player, worldFeatures, function (player, worldFeature) {
+            
+        });
 
+        this.physics.add.collider(this.enemies, resources, function (enemy, resource) {
+
+        });
+
+        
+        this.physics.add.collider(this.enemies, worldFeatures, function (enemy, worldFeature) {
+            
         });
 
         this.physics.add.collider(this.enemies, bullets, function(enemy, bullet){
             enemy.destroy()
             bullet.destroy()
+            
         })
 
         this.physics.add.collider(this.player, enemyBullets, function (player = this.player, enemyBullet) {
             player.healthDown(10)
             enemyBullet.destroy()
         })
-        this.physics.add.collider(this.enemies, resources, function(enemy, resource){
+        this.physics.add.collider(this.enemies, worldFeatures, function(enemy, worldFeature){
             
         })
 
-        this.physics.add.collider(bullets, mountains, function (bullet, mountain) {
+        this.physics.add.collider(bullets, worldFeatures, function (bullet, worldFeature) {
                             
-            mountain.destroy()
+            // mountain.setSize(mountain.width * 0.5, mountain.height * 0.5)
             bullet.destroy()
-            // this.player.grabResource('stone', 25)
+            worldFeature.destroy()
+            // worldFeature.changeFeatureToResource()
+            // resources.add(mountain)
+            // mountain.changeToResource()
+            
+            
+            
+            // this.player.changeResourceQuantity('stone', 25)
 
         })
-        this.physics.add.collider(trees, enemyBullets, function(tree, enemyBullet){
-            tree.destroy()
+        this.physics.add.collider(worldFeatures, enemyBullets, function(worldFeature, enemyBullet){
+            worldFeature.destroy()
             enemyBullet.destroy()
         })
 
-        this.physics.add.collider(mountains, enemyBullets, function(mountain, enemyBullet){
-            mountain.destroy()
-            enemyBullet.destroy()
-        })
+        this.physics.collide(worldFeatures)
 
-        this.physics.add.collider(bullets, trees, function (bullet, tree) {     
-            tree.destroy()
-            bullet.destroy()
-            // this.player.grabResource('wood', 25)
-        })
+        // this.physics.add.collider(mountains, function(mountain, enemyBullet){
+        //     mountain.destroy()
+        //     enemyBullet.destroy()
+        // })
+        
+        // this.physics.add.collider(bullets, trees, function (bullet, tree) {     
+        //     // tree.setSize(tree.width * 0.5, tree.height * 0.5)
+        //     // bullet.destroy()
+        //     // resourcer(tree.scene, tree.x, tree.y, tree.key, resources)
+        //     // resources.add(tree)
+        //     // tree.changeToResource()
+        //     // tree.setDisplaySize(tree.width * 0.25, tree.height * 0.25).setCircle(tree.width * 0.25)
+        //     // this.player.changeResourceQuantity('wood', 25)
+        // })
         /**Add some generic colliders */
-        this.physics.add.collider(companion, resources)
+        this.physics.add.collider(companion, worldFeatures)
         this.physics.add.collider(this.enemies)
         this.physics.add.collider(trees, mountains)
+        
         
        
         /* Create animations and text objects for game*/
@@ -370,7 +416,6 @@ export default class Game extends Phaser.Scene {
          */
         if (!this.player.isAlive) {
             this.placeText.destroy()
-            // this.placeText.setDepth(-1)
             this.deadMessage.setDepth(10)
             this.player.destroy()
             this.scene.pause()
@@ -396,7 +441,7 @@ export default class Game extends Phaser.Scene {
                 this.player.setVelocity(0, 0);
             }
         }
-        if (mousePointer.isDown && this.player.isAlive) {
+        if (this.mousePointer.isDown && this.player.isAlive) {
             
             if (checkTime < 500) {
                 checkTime += delta;
@@ -404,10 +449,9 @@ export default class Game extends Phaser.Scene {
             else {
             bullet = bullets.get()
             if (bullet) {
-                bullet.mouseX = mousePointer.x;
-                bullet.mouseY = mousePointer.y;
+                let mouseVector = new Phaser.Math.Vector2(this.mousePointer.worldX, this.mousePointer.worldY)
                 bullet.body.setMass(100);
-                bullet.fire(this.player.getCenter(), mousePointer.position);  
+                bullet.fire(this.player.getCenter(), mouseVector);  
                 }
             checkTime = 0;
             }
