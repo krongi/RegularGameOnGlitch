@@ -13,6 +13,7 @@ export default class Bullet extends Phaser.Physics.Arcade.Image {
         this.lifeSpan = 0
         this.speed = Phaser.Math.GetSpeed(600, 1)
         
+        
 
     }
     
@@ -52,5 +53,10 @@ export default class Bullet extends Phaser.Physics.Arcade.Image {
             
         }
             
+    }
+
+static    whenDestroyed() {
+        // console.log("\nSo many dicks...\n")
+        // console.log("'this' is: " + this)
     }
 }

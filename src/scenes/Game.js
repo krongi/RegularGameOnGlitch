@@ -8,12 +8,15 @@ import Enemy from "../myLib/Enemy.js";
 import EnemyBullet from "../myLib/EnemyBullet.js"
 import resourcer from "../myLib/functions.js"
 import WorldFeature from "../myLib/WorldFeature.js";
+import MyBullet from "../myLib/MyBullet.js";
+
 
 // hardware
 let mousePointer;
 
 // projectiles
 let bullet;
+let myBullet;
 
 // groups
 let bullets;
@@ -157,10 +160,11 @@ export default class Game extends Phaser.Scene {
         myBullets = this.physics.add.staticGroup({
             defaultFrame: 'laser1',
             active: true,
-            classType: Bullet,
-            runChildUpdate: true
+            classType: MyBullet,
+            runChildUpdate: true, 
+               
         })
-
+        
         enemyBullets = this.physics.add.staticGroup({
             defaultFrame: 'laser1',
             active: true,
@@ -182,7 +186,7 @@ export default class Game extends Phaser.Scene {
             
 
         })
-
+        
         resources = this.add.group({
                 active: false,
                 setVisible: false,
@@ -211,17 +215,20 @@ export default class Game extends Phaser.Scene {
             mountain.setMass(200)
             mountain.body.isCircle = true
             mountain.getName()
+            mountain.worldFeatureType = 'mountain'
+            mountain.resourceType = 'stone'
+            mountain.on('destroy', this.resourceAdder)
 
-            // mountain.setBodySize(mountain.width * 0.5, mountain.height * 0.5)
-            // mountain.body.setCircle(mountain.body.width * 0.5, mountain.body.height * 0.5)
 
             tree = trees.get(Phaser.Math.Between(40, 1400), Phaser.Math.Between(40, 1400))
             tree.name = tree.imageKey + x.toString
             tree.setMass(200)
             tree.body.isCircle = true
             tree.getName()
-            // tree.setBodySize(tree.width * 0.5, tree.height * 0.5)
-            // tree.body.setCircle(tree.body.width * 0.5, tree.body.height * 0.5)
+            tree.worldFeatureType = 'tree'
+            tree.resourceType = 'wood'
+            tree.on('destroy', this.resourceAdder)
+
             worldFeatures.add(mountain)
             worldFeatures.add(tree)
             
@@ -237,7 +244,7 @@ export default class Game extends Phaser.Scene {
             
             
         }
-        
+        // this.player.setData(resourceType, resourceAmount)
         /* Create the companion object. He just follows player around*/
         companion = this.physics.add.sprite(200, 300, 'blueRocketGuy', 4)
             .setVisible(true)
@@ -245,16 +252,30 @@ export default class Game extends Phaser.Scene {
             .setActive(true)
             .setInteractive()
         companion.body.setCircle(10, 6, 6)
-        
+        console.log(this.player.getData("stone"))
         /* Set main camera to center on and follow the player*/
         this.cameras.main.centerOn(this.player.x, this.player.y);
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setDeadzone(200, 100)
-
-        /* Add colliders for game objects*/
         this.physics.add.collider(this.player, resources, function (player, resource) {
-            
-        });        
+            // this.resource = resource
+            console.log(resource.name)
+            resource.setResource
+            resource._resourceType = resource.resourceType
+            player.incData(resource.resourceType, 25)
+            console.log(player.data.get(resource.resourceType))
+            // game.scene.destroy(resource)
+            console.log(resources.contains(resource.name))
+            resource.setActive(false)
+            resource.setDepth(-1)
+            resource.body.destroy()
+
+        })
+        
+        /* Add colliders for game objects*/
+        // this.physics.add.collider(this.player, resources, function (player, resource) {    
+        
+        // });        
 
         this.physics.add.collider(this.player, worldFeatures, function (player, worldFeature) {
             
@@ -282,12 +303,14 @@ export default class Game extends Phaser.Scene {
         this.physics.add.collider(this.enemies, worldFeatures, function(enemy, worldFeature){
             
         })
-
-        this.physics.add.collider(bullets, worldFeatures, function (bullet, worldFeature) {
+        
+        this.physics.add.collider(myBullets, worldFeatures, function (myBullet, worldFeature) {
                             
             // mountain.setSize(mountain.width * 0.5, mountain.height * 0.5)
-            bullet.destroy()
+            myBullet.destroy()
             worldFeature.destroy()
+            // this.events.emit('worldFeatureDestroyed', worldFeature.name)
+            // this.events.on()
             // worldFeature.changeFeatureToResource()
             // resources.add(mountain)
             // mountain.changeToResource()
@@ -298,9 +321,14 @@ export default class Game extends Phaser.Scene {
 
         })
         this.physics.add.collider(worldFeatures, enemyBullets, function(worldFeature, enemyBullet){
-            worldFeature.destroy()
+            // worldFeature.destroy()
             enemyBullet.destroy()
         })
+
+        // this.physics.world.addCollider(this.player, resources, function(player, resource) {
+        //     resource.resourcePickup(player)
+        //     console.log("Picked up " + resource.resourceType)
+        // })
 
         this.physics.collide(worldFeatures)
 
@@ -323,7 +351,9 @@ export default class Game extends Phaser.Scene {
         this.physics.add.collider(this.enemies)
         this.physics.add.collider(trees, mountains)
         
-        
+        this.events.on('worldFeatureDestroyed', function() {
+            console.log(worldFeature.name)
+        })
        
         /* Create animations and text objects for game*/
         this.anims.play('blueRocketAnimationStill', companion)
@@ -341,7 +371,7 @@ export default class Game extends Phaser.Scene {
             .setDepth(10)
 
             
-        this.deadMessage = this.add.text(this.player.x, this.player.y, "  YOU'RE DEAD  ")
+        this.deadMessage = this.add.text(this.cameras.main.x, this.cameras.main.y, "  YOU'RE DEAD  ")
             .setScrollFactor(0,0)
             .setBackgroundColor('black')
             .setColor('red')
@@ -351,6 +381,15 @@ export default class Game extends Phaser.Scene {
     
     update(time, delta) {
         /**Ensure companion area fallows player around */
+        
+        worldFeatures.on('destroyed', function(worldFeature){
+            let resCenter = worldFeature.getCenter()
+            let resAdded = this.resources.get(resCenter.x, resCenter.y, 'mountain')
+            resAdded.setActive(true)
+            resAdded.setVisible(true)
+            resAdded.body.isCircle = true
+        })
+
         this.companionArea.setPosition(this.player.getCenter().x, this.player.getCenter().y)
         
         /**Update the "HUD" on the screen with relevant info*/
@@ -364,7 +403,7 @@ export default class Game extends Phaser.Scene {
             .setScale(1.5, 1.5)
             .setDepth(10)
         }
-
+        
         /** Check if enemies are in range, stop and fire if so */
         let inRange = false
         this.enemies.children.each(function enemiesLocationCheck(enemy) {
@@ -447,16 +486,41 @@ export default class Game extends Phaser.Scene {
                 checkTime += delta;
             }
             else {
-            bullet = bullets.get()
-            if (bullet) {
+            myBullet = myBullets.get()
+            if (myBullet) {
+                myBullet.on('destroy', MyBullet.whenDestroyed)
                 let mouseVector = new Phaser.Math.Vector2(this.mousePointer.worldX, this.mousePointer.worldY)
-                bullet.body.setMass(100);
-                bullet.fire(this.player.getCenter(), mouseVector);  
+                myBullet.body.setMass(100);
+                myBullet.fire(this.player.getCenter(), mouseVector);  
                 }
             checkTime = 0;
             }
+
         }
-               
+
+                   
+    }
+
+    
+    resourceAdder(resource) {
+        let curtime = new Phaser.Math.RandomDataGenerator()
+        let tstamp = curtime.uuid()
+        let reType = resource.resourceType
+        let name = reType + "-" + tstamp
+        let resCenter = resource.getCenter()
+        let resAdded = resources.get(resCenter.x, resCenter.y, resource.worldFeatureType, resource.resourceType, resource.resourceAmount)
+        resAdded.setInteractive()
+        resAdded.setActive(true)
+        resAdded.setVisible(true)
+        resAdded.body.isCircle = true
+        resAdded.resourceType = resource.resourceType
+        resAdded.resourceAmount = 25
+        resAdded.name = name
+        // this.scene.add.existing(resAdded)
+        // resAdded.on('added', function(){
+        //     resAdded.setData(this.resourceType, this.resourceAmount)
+        //     return resAdded.name                
+        // })
     }
 
 }

@@ -3,7 +3,7 @@ import { GanglandTakeover } from "../main.js";
 import Game from "../scenes/Game.js";
 
 export default class WorldFeature extends Phaser.Physics.Arcade.Image {
-    constructor(scene, x, y, texture) {
+    constructor(scene, x, y, texture, worldFeatureType, resourceType) {
     super(scene, x, y, texture)
     this.setPosition(x, y)
     // this.key = key
@@ -16,7 +16,8 @@ export default class WorldFeature extends Phaser.Physics.Arcade.Image {
     this.setInteractive()
     this.setVisible(true)
     this.setImmovable(true)
-    this.key
+    this.worldFeatureType = worldFeatureType
+    this.resourceType = resourceType
     }
     
     getName() {
