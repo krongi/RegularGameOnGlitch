@@ -227,7 +227,6 @@ export default class Game extends Phaser.Scene {
         
         /* Set main camera to center on and follow the player*/
         this.cameras.main.centerOn(this.player.x, this.player.y);
-        this.cameras.main.deadzone.
         this.cameras.main.startFollow(this.player);
 
         /* Add colliders for game objects*/
