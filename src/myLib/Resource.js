@@ -41,22 +41,6 @@ export default class Resource extends Phaser.Physics.Arcade.Image {
         console.log(player + "\n")
         console.log(this.data.getAll + "\n")
         return this.data.getAll + "\n"
-        // let amount = this.data.get(this.resourceType)
-        // let resourceType = this.resourceType
-        // let pickedUp = {resourceType: resourceAmount}
-        // picker.data.set(resourceType, resourceAmount)
         
     }
 }
-// var resourcePicked = function()
-//     {
-
-//         console.log(player + "\n")
-//         console.log(this.data.getAll + "\n")
-//         return this.data.getAll + "\n"
-//         // let amount = this.data.get(this.resourceType)
-//         // let resourceType = this.resourceType
-//         // let pickedUp = {resourceType: resourceAmount}
-//         // picker.data.set(resourceType, resourceAmount)
-        
-//     }
