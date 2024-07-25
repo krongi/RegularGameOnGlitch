@@ -391,8 +391,8 @@ export default class Game extends Phaser.Scene {
 
         
         this.joySticks = [
-            this.CreateJoyStick(this, 224, 600),
-            this.CreateJoyStick(this, 800, 600)
+            this.CreateJoyStick(this, 124, 650),
+            this.CreateJoyStick(this, 900, 650)
         ]
         
 
@@ -519,7 +519,7 @@ export default class Game extends Phaser.Scene {
                 this.player.setVelocity(0, 0);
             }
         }
-        if (this.joySticks[1] != 0 && this.player.isAlive) {
+        if (this.mousePointer.isDown && this.player.isAlive) {
             
             if (checkTime < 500) {
                 checkTime += delta;
