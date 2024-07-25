@@ -35,6 +35,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setBounce(.99, .99)
         this.setInteractive(true)
         this.once('canFire', function(){console.log('from enemy to enemy')})
+        this.isAlive = true
     }
     
     augmentResource(resource, amount) {
@@ -75,13 +76,22 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         
     }
 
+    healthDown(dropMax, dropMin = 0 ) {
+        this.incData('health', -Phaser.Math.Between(dropMin, dropMax))
+        let currentHealth = this.getData('health')
+        this.scene.events.emit('gotHit', this.getData('health'))
+        if (currentHealth <= 0) {
+            this.isAlive = false
+            this.setVelocity(0,0)
+        }
+    }
     update(time, delta) {
         this.advance(this.target)
-        this.lifeSpan += delta
-        this.x -= this.incX * (this.speed * delta)
-        this.body.x -= this.incX * (this.speed * delta)
-        this.y -= this.incY * (this.speed * delta)
-        this.body.y -= this.incY * (this.speed * delta)
-        this.location = [this.body.x, this.body.y]
+        // this.lifeSpan += delta
+        // this.x -= this.incX * (this.speed * delta)
+        // this.body.x -= this.incX * (this.speed * delta)
+        // this.y -= this.incY * (this.speed * delta)
+        // this.body.y -= this.incY * (this.speed * delta)
+        // this.location = [this.body.x, this.body.y]
     }
 }

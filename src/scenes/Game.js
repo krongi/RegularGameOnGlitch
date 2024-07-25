@@ -42,7 +42,8 @@ let mountainImage;
 let treeImage;
 
 // MISC
-let checkTime = 0
+let checkTime = 0;
+let enemyCheckTime = 0;
 let placeText;
 let shootingDistance;
 let companionArea;
@@ -63,6 +64,10 @@ export default class Game extends Phaser.Scene {
 
     preload() {
 
+        let joystickURL;
+        joystickURL = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js';
+        this.load.plugin('rexvirtualjoystickplugin', joystickURL, true);
+
         /**Load images and other assets to be used by this scene */
         this.load.spritesheet('blueRocketGuy', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/blueRocketGuy.png?v=1721074668968', {frameWidth:32, frameHeight: 32})
         this.load.spritesheet('redSoldier', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/redSoldiers.png?v=1721074671398', {frameWidth: 64, frameHeight: 64});
@@ -80,6 +85,31 @@ export default class Game extends Phaser.Scene {
     }
         
     create() {
+
+        /*
+        Create the joystick and button from the imported plugin. 
+        */
+
+        this.input.addPointer(1);
+
+        var print = this.add.text(0, 0, '');
+
+        var joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
+            x: 300,
+            y: 300,
+            radius: 100,
+            // base: this.add.circle(0, 0, 100, 0x888888),
+            // thumb: this.add.circle(0, 0, 50, 0xcccccc),
+            // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+            // forceMin: 16,
+            // enable: true
+        })
+
+        var button = this.add.circle(500, 300, 50).setStrokeStyle(2, 0xff0000)
+            .setInteractive()
+            .on('pointerdown', function () {
+                print.text += 'Click Button\n';
+            })
 
         // Create animations for sprites etc
         this.anims.create({
@@ -141,9 +171,7 @@ export default class Game extends Phaser.Scene {
 
         /* On Screen control stuff here */
 
-        onScreenDPad = this.add.image(0, 0, 'dpad')
-        onScreenDPad.body = new Phaser.Physics.Arcade.Body(this.physics.world, onScreenDPad)
-        onScreenDPad.setActive()
+
         
         let up = new Phaser.Geom.Rectangle(0, 0, 30, 30)
         
@@ -196,7 +224,6 @@ export default class Game extends Phaser.Scene {
             active: true,
             setVisible: true,
             
-
         })
         
         resources = this.add.group({
@@ -215,7 +242,6 @@ export default class Game extends Phaser.Scene {
             classType: Tree,
             active: true,
         })
-        this.dpad = 
         /**Create and activate player */
         this.player = new Player(this, Phaser.Math.Between(200, 400), Phaser.Math.Between(200, 400), 'redSoldier');
         this.player.setActive(true).setVisible(true).setInteractive()
@@ -270,7 +296,7 @@ export default class Game extends Phaser.Scene {
         /* Set main camera to center on and follow the player*/
         this.cameras.main.centerOn(this.player.x, this.player.y);
         this.cameras.main.startFollow(this.player);
-        this.cameras.main.setDeadzone(200, 100)
+        // this.cameras.main.setDeadzone(200, 100)
 
 
         this.physics.add.collider(this.player, resources, function (player, resource) {
@@ -300,9 +326,9 @@ export default class Game extends Phaser.Scene {
             
         });
 
-        this.physics.add.collider(this.enemies, bullets, function(enemy, bullet){
-            enemy.destroy()
-            bullet.destroy()
+        this.physics.add.collider(this.enemies, myBullets, function(enemy, bullet){
+            enemy.healthDown(5)
+            myBullet.destroy()
             
         })
 
@@ -349,7 +375,6 @@ export default class Game extends Phaser.Scene {
             .setColor('grey')
             .setScale(1.5, 1.5)
             .setDepth(10)
-
             
         this.deadMessage = this.add.text(this.cameras.main.x, this.cameras.main.y, "  YOU'RE DEAD  ")
             .setScrollFactor(0,0)
@@ -357,11 +382,42 @@ export default class Game extends Phaser.Scene {
             .setColor('red')
             .setScale(5)
             .setDepth(-1)
+
+        // onScreenDPad = this.add.image(this.player.x - 400, this.player.y + 200, 'dpad')
+        // onScreenDPad.body = new Phaser.Physics.Arcade.Body(this.physics.world, onScreenDPad)
+        // onScreenDPad.setActive(true).setInteractive().setVisible(true).setDepth(2).setScale(0.25, 0.25)
+
+        this.input.addPointer(1);
+
+        
+        this.joySticks = [
+            this.CreateJoyStick(this, 224, 600),
+            this.CreateJoyStick(this, 800, 600)
+        ]
+        
+
+        
     }
     
     update(time, delta) {
+
+        var s = []
+        for (var i = 0, cnt = this.joySticks.length; i < cnt; i++) {
+            var cursorKeys = this.joySticks[i].createCursorKeys();
+            s.push(`[${i}] Key down: `);
+            for (var name in cursorKeys) {
+                if (cursorKeys[name].isDown) {
+                    s.push(`${name} `);
+                }
+            }
+            s.push('\n');
+        }
+        // this.text.setText(s.join(''));
+        // onScreenDPad.x = this.player.x - 420
+        // onScreenDPad.y = this.player.y + 320
         /**Ensure companion area fallows player around */
         
+
         worldFeatures.on('destroyed', function(worldFeature){
             let resCenter = worldFeature.getCenter()
             let resAdded = this.resources.get(resCenter.x, resCenter.y, 'mountain')
@@ -387,6 +443,9 @@ export default class Game extends Phaser.Scene {
         /** Check if enemies are in range, stop and fire if so */
         let inRange = false
         this.enemies.children.each(function enemiesLocationCheck(enemy) {
+            if (!enemy.isAlive) {
+                enemy.destroy()
+            }
             let playerCurrentLocation = this.player.position
             let enemyCurrentLocation = enemy.position
             let xdiff = Math.abs(enemy.x) - Math.abs(this.player.x)
@@ -396,10 +455,10 @@ export default class Game extends Phaser.Scene {
                 inRange = true
             }
             if (inRange == true) {
-                    if (checkTime < 1500) {
-                        checkTime += delta;
-                    }
-                    else {
+                if (enemyCheckTime < 1500) {
+                    enemyCheckTime += delta;
+                }
+                else {
                     enemyBullet = enemyBullets.get()
                     if (enemyBullet) {
                         angleIncrementCounter += 0.1
@@ -410,8 +469,8 @@ export default class Game extends Phaser.Scene {
                         if (angleIncrementCounter < 1) {
                             angleIncrementCounter = 0
                         }
-                        }
-                    checkTime = 0;
+                    }
+                    enemyCheckTime = 0;
                     
                 }
             }
@@ -440,19 +499,19 @@ export default class Game extends Phaser.Scene {
             this.scene.pause()
         }
         else {
-            if (this.w.isDown) {
+            if (this.w.isDown || this.joySticks[0].up) {
                 this.player.setVelocityY(-200);
                 this.player.setFrame(1);
             }        
-            else if (this.s.isDown) {
+            else if (this.s.isDown || this.joySticks[0].down) {
                 this.player.setVelocityY(200);
                 this.player.setFrame(3);
             }
-            else if (this.d.isDown) {
+            else if (this.d.isDown || this.joySticks[0].right) {
                 this.player.setVelocityX(200);
                 this.player.setFrame(2);
             }
-            else if (this.a.isDown) {
+            else if (this.a.isDown || this.joySticks[0].left) {
                 this.player.setVelocityX(-200);
                 this.player.setFrame(0);
             }
@@ -460,7 +519,7 @@ export default class Game extends Phaser.Scene {
                 this.player.setVelocity(0, 0);
             }
         }
-        if (this.mousePointer.isDown && this.player.isAlive) {
+        if (this.joySticks[1] != 0 && this.player.isAlive) {
             
             if (checkTime < 500) {
                 checkTime += delta;
@@ -471,7 +530,8 @@ export default class Game extends Phaser.Scene {
                 myBullet.on('destroy', MyBullet.whenDestroyed)
                 let mouseVector = new Phaser.Math.Vector2(this.mousePointer.worldX, this.mousePointer.worldY)
                 myBullet.body.setMass(100);
-                myBullet.fire(this.player.getCenter(), mouseVector);  
+                // myBullet.fire(this.player.getCenter(), mouseVector);
+                myBullet.fireJS(this.player.getCenter(), this.joySticks[1].rotation);
                 }
             checkTime = 0;
             }
@@ -493,6 +553,20 @@ export default class Game extends Phaser.Scene {
         resAdded.resourceAmount = 25
         resAdded.name = name
 
+    }
+
+    CreateJoyStick = function (scene, x, y) {
+        return scene.plugins.get('rexvirtualjoystickplugin').add(scene, {
+            x: x, y: y,
+            radius: 100,
+            
+            // base: this.add.circle(0, 0, 100, 0x888888),
+            // thumb: this.add.circle(0, 0, 50, 0xcccccc),
+            // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+            // forceMin: 16,
+            // enable: true
+        })
+        
     }
 
 }

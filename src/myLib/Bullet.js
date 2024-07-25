@@ -14,7 +14,7 @@ export default class Bullet extends Phaser.Physics.Arcade.Image {
         this.speed = Phaser.Math.GetSpeed(600, 1)
         
         
-
+    
     }
     
 

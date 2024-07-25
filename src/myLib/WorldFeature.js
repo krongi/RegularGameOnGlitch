@@ -21,7 +21,7 @@ export default class WorldFeature extends Phaser.Physics.Arcade.Image {
     }
     
     getName() {
-        console.log(this.name)
+        // console.log(this.name)
         return this.name
     }
 

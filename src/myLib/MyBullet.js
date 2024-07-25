@@ -16,5 +16,21 @@ export default class MyBullet extends Bullet {
 
     }
     
-    
+
+    fireJS (shooterPosition, angle) {
+        // angle = Phaser.Math.Angle.Normalize(angle)
+        this.setActive(true)
+        this.setVisible(true)      
+        this.enableBody(true, shooterPosition.x, shooterPosition.y)
+        this.setPosition(shooterPosition.x, shooterPosition.y)
+        this.setRotation(angle)
+        this.body.isCircle = true
+        this.body.setSize(this.width * 0.25, this.height * 0.25)
+        this.flipX = false
+        this.incX = Math.cos(angle)
+        this.incY = Math.sin(angle)
+        this.incX = -(this.incX)
+        this.incY = -(this.incY)
+        this.lifeSpan = 1000
+    }
 }
