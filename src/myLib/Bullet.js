@@ -3,8 +3,8 @@ import Game from "../scenes/Game.js"
 
 export default class Bullet extends Phaser.Physics.Arcade.Image {
     
-    constructor(scene, x, y, imageKey) {
-        super(scene, x, y, imageKey = 'laser1')
+    constructor(scene, x, y, imageKey, frame) {
+        super(scene, x, y, imageKey, frame)
         var lastFired = 0
         var isDown = false
         this.imageKey = imageKey
@@ -25,11 +25,11 @@ export default class Bullet extends Phaser.Physics.Arcade.Image {
         this.setPosition(shooterPosition.x, shooterPosition.y)
         let angle = Phaser.Math.Angle.Between(targetPosition.x, targetPosition.y, shooterPosition.x, shooterPosition.y)
         this.setRotation(angle)
-        this.body.isCircle = true
         this.body.setSize(this.width * 0.25, this.height * 0.25)
         this.flipX = true
         this.incX = Math.cos(angle)
         this.incY = Math.sin(angle)
+        this.body.isCircle = true
         this.lifeSpan = 1000
 
     }

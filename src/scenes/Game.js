@@ -79,8 +79,7 @@ export default class Game extends Phaser.Scene {
         this.load.image('laser1','https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/laser1.png?v=1721074670167');
         this.treeImage = this.load.image('tree', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/tree.png?v=1721074671589');
         this.mountainImage = this.load.image('mountain', 'https://cdn.glitch.global/d25e47bc-9024-4ce3-bedc-f6a5f1430702/mountain.png?v=1721074671154');
-        this.load.image('dpad', '/assets/onScreenDPad.png')
-        this.load.image('arrowButton', '/assets/onScreenArrow.png')
+        
 
     }
         
@@ -89,6 +88,7 @@ export default class Game extends Phaser.Scene {
         /*
         Create the joystick and button from the imported plugin. 
         */
+
 
         this.input.addPointer(1);
 
@@ -198,7 +198,8 @@ export default class Game extends Phaser.Scene {
         })
 
         myBullets = this.physics.add.staticGroup({
-            defaultFrame: 'laser1',
+            defaultKey: 'laser',
+            defaultFrame: '22.png',
             active: true,
             classType: MyBullet,
             runChildUpdate: true, 
@@ -519,9 +520,9 @@ export default class Game extends Phaser.Scene {
                 this.player.setVelocity(0, 0);
             }
         }
-        if (this.mousePointer.isDown && this.player.isAlive) {
+        if (this.mousePointer.isDown && this.joySticks[1].rotation != 0 && this.player.isAlive) {
             
-            if (checkTime < 500) {
+            if (checkTime < 200) {
                 checkTime += delta;
             }
             else {
@@ -535,7 +536,9 @@ export default class Game extends Phaser.Scene {
                 }
             checkTime = 0;
             }
-        }                
+        }    
+        // this.player.setMass(this.player.body.mass + 1) 
+        // console.log(this.player.body.mass)       
     }
  
     resourceAdder(resource) {

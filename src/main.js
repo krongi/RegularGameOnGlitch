@@ -16,10 +16,10 @@ const gameConfig = ({
         arcade: {
             width: 1600,
             height: 1600,
-            // gravity: {
-            //     y: 200
-            // },
-            // debug: true
+            gravity: {
+                y: 200
+            },
+            debug: true
         },
     
     }})
