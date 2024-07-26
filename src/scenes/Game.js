@@ -371,7 +371,7 @@ export default class Game extends Phaser.Scene {
 
         this.physics.add.collider(this.player, powerUps, function (player, powerUp) {
             
-            player.firingSpeedUp()
+            player.caliberUp()
             powerUp.destroyPUP()
 
         })
@@ -558,7 +558,7 @@ export default class Game extends Phaser.Scene {
                 let mouseVector = new Phaser.Math.Vector2(this.mousePointer.worldX, this.mousePointer.worldY)
                 myBullet.body.setMass(this.player.ammoMass);
                 // myBullet.fire(this.player.getCenter(), mouseVector);
-                myBullet.fireJS(this.player.getCenter(), this.joySticks[1].rotation, this.player.firingSpeed);
+                myBullet.fireJS(this.player.getCenter(), this.joySticks[1].rotation, this.player.firingSpeed, this.caliberMultiplier, this.damageModifier);
                 }
             checkTime = 0;
             }

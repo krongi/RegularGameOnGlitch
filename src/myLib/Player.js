@@ -28,6 +28,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.startCheck = false
         this.ammoMass = 100
         this.damageModifier = 1
+        this.caliberMultiplier = 1
         console.log(this.firingSpeed)
         }
 
@@ -49,54 +50,35 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    powerUp(powerUpType, powerUpTimeLimit) {
-        this.powerUpActiveTime = powerUpTimeLimit
-        this.powerUpActive = true
-        this.startCheck = true
-        switch (powerUpType) {
-            case 'FiringSpeed':
-                if (this.powerUpType.indexOf('FiringSpeed') == -1) {
-                    this.firingSpeed = 800
-                    this.powerUpType.push('FiringSpeed')
-                    
-                }
-            
-            } 
-    }
-
     firingSpeedUp() {
-        this.firingSpeed = 800
+        this.firingSpeed = 1000
         this.ammoMass = 150
         this.damageModifier = 1.25
-        this.powerUpActiveTime = 30000
+        this.powerUpActiveTime = 15000
 
     }
 
     firingSpeedDown() {
-        this.firingSpeed = 400
+        this.firingSpeed = 600
         this.ammoMass = 100
         this.damageModifier = 1
         this.powerUpActiveTime = 0
     }
 
-    powerDown(powerUpType) {
-        this.powerUpActiveTime = 0
-        this.powerUpActive = false
-        this.startCheck =  false
-        switch(powerUpType) {
-            case 'FiringSpeed':
-                this.firingSpeed = 200
-                this.powerUpType.pop()
-                console.log(this.firingSpeed)
-        }
+    caliberUp() {
+        this.firingSpeed = 450
+        this.caliberMultiplier = 1.5
+        this.ammoMass = 200
+        this.damageModifier = 1.5
+        this.powerUpActiveTime = 15000
     }
 
-    checkPowerUpActiveTime(delta, powerUpType) {
-        this.powerUpActiveTime -= delta
-        if (this.powerUpActiveTime <= 0) {
-            this.powerDown(this.powerUpType)
-            console.log('Power Down')
-        }
+    caliberDown() {
+        this.firingSpeed = 600
+        this.caliberMultiplier = 1
+        this.ammoMass = 100
+        this.damageModifier = 1
+        this.powerUpActiveTime = 0
     }
 
     update(delta) {
@@ -105,12 +87,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.powerUpActiveTime -= delta
         }
         else {
-            this.firingSpeedDown()
+            this.caliberDown()
         }
-        console.log(this.powerUpActiveTime)
-        // this.circle.setPosition(this.x, this.y)
-        // this.scene.physics.collide(this.rect, this.scene.enemies)
-        // this.rect.setPosition(this.x, this.y)
         
     }
 }
