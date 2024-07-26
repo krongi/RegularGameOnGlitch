@@ -5,8 +5,8 @@ import Bullet from "./Bullet.js";
 
 export default class EnemyBullet extends Bullet {
     
-    constructor(scene, x, y, imageKey) {
-        super(scene, x, y, imageKey = 'laser1')
+    constructor(scene, x, y, imageKey, frame) {
+        super(scene, x, y, 'laser', '22.png')
         var lastFired = 0
         var isDown = false
         var mouseX = 0
@@ -16,52 +16,15 @@ export default class EnemyBullet extends Bullet {
         this.incY = 0
         this.lifeSpan = 0
         this.speed = Phaser.Math.GetSpeed(400, 1)
-        
+        this.setScale(0.25, 0.25)
+        // this.body.setSize(this.width, this.height)f
+
+    }
+
+    fire(shooterPosition, targetPosition) {
+        let bullet = super.fire(shooterPosition, targetPosition)
+        bullet.body.setSize(bullet.displayWidth, bullet.displayHeight)
 
     }
     
-
-    // fire(shooterPosition, targetPosition) {
-    //     // this.setCircle(this.width)
-    //     // this.getCenter(this.body.center)
-    //     this.setActive(true).setVisible(true).setCircle(this.width / 2).getCenter(this.body.center)
-    //     this.setVisible(true)      
-    //     this.enableBody(true, shooterPosition.x, shooterPosition.y)
-    //     this.setPosition(shooterPosition.x, shooterPosition.y)
-    //     let angle = Phaser.Math.Angle.Between(targetPosition.x, targetPosition.y, shooterPosition.x, shooterPosition.y)
-
-    //     this.setRotation(angle)
-    //     this.body.setSize(this.width * 0.25, this.height * 0.25)
-        
-        
-    //     this.flipX = true
-    //     // this.flipY = true
-    //     this.incX = Math.cos(angle)
-    //     this.incY = Math.sin(angle)
-    //     // this.incX = Math.sin(angle) * 0.5
-    //     // this.incY = Math.cos(angle) * 0.5
-    //     this.lifeSpan = 1000
-
-    // }
-
-    // update(time, delta) {
-    //     this.body.radius = 10
-    //     this.lifeSpan -= delta
-    //     this.x -= this.incX * (this.speed * delta)
-    //     this.body.x -= this.incX * (this.speed * delta)
-    //     this.y -= this.incY * (this.speed * delta)
-    //     this.body.y -= this.incY * (this.speed * delta)
-
-    //     /* using below to fuck with size of bullets*/
-    //     // this.displayHeight += Math.abs(this.incY) * 5.5
-    //     // this.displayWidth += Math.abs(this.incX) * 5.5
-
-    //     if (this.lifeSpan <= 0) {
-    //         this.setActive(false)
-    //         this.setVisible(false)
-    //         this.destroy()
-            
-    //     }
-            
-    // }
 }

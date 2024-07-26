@@ -19,6 +19,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
         this.setVisible(true)
         this.setCollideWorldBounds(true)
         this.isAlive = true
+        this.firingSpeed = 600
+        this.powerUpActive = false
+        this.powerUpTimeLimit = 0
+        this.powerUpType
         }
 
     getLocation() {
@@ -37,6 +41,19 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
             this.isAlive = false
            this.setVelocity(0,0)
         }
+    }
+
+    powerUp(powerUpType, powerUpTimeLimit) {
+        this.powerUpTimeLimit = powerUpTimeLimit
+        this.powerUpType = powerUpType
+        this.powerUpActive = true
+
+        switch (powerUpType) {
+            case 'FiringSpeed':
+                this.firingSpeed = this.firingSpeed * 2
+
+        } 
+
     }
 
     update() {

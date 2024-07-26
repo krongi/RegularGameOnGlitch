@@ -9,6 +9,7 @@ import EnemyBullet from "../myLib/EnemyBullet.js"
 import resourcer from "../myLib/functions.js"
 import WorldFeature from "../myLib/WorldFeature.js";
 import MyBullet from "../myLib/MyBullet.js";
+import PowerUp from "../myLib/PowerUp.js";
 
 
 // hardware
@@ -29,7 +30,8 @@ let resources;
 let trees
 let worldFeatures;
 let worldFeature;
-let onScreenDPad
+let onScreenDPad;
+let powerUps;
 
 
 //sprites and images
@@ -199,11 +201,23 @@ export default class Game extends Phaser.Scene {
 
         myBullets = this.physics.add.staticGroup({
             defaultKey: 'laser',
-            defaultFrame: '22.png',
+            // defaultFrame: '22.png',
+            frame: 15,
             active: true,
             classType: MyBullet,
             runChildUpdate: true, 
+            isCircle: true,
+            speed: 200,
                
+        })
+
+        powerUps = this.physics.add.staticGroup({
+            classType: PowerUp,
+            defaultKey: 'laser',
+            defaultFrame: '07.png',
+            runChildUpdate: true,
+            active: true
+            
         })
         
         enemyBullets = this.physics.add.staticGroup({
@@ -313,7 +327,7 @@ export default class Game extends Phaser.Scene {
         })
         
         /* Add colliders for game objects*/
-    
+            
         this.physics.add.collider(this.player, worldFeatures, function (player, worldFeature) {
             
         });
@@ -329,7 +343,10 @@ export default class Game extends Phaser.Scene {
 
         this.physics.add.collider(this.enemies, myBullets, function(enemy, bullet){
             enemy.healthDown(5)
+            let powerup = powerUps.get()
+            powerup.spawnPUP(enemy.x, enemy.y)
             myBullet.destroy()
+            
             
         })
 
@@ -345,10 +362,18 @@ export default class Game extends Phaser.Scene {
             myBullet.destroy()
             worldFeature.destroy()
 
+
         })
 
         this.physics.add.collider(worldFeatures, enemyBullets, function(worldFeature, enemyBullet){
             enemyBullet.destroy()
+        })
+
+        this.physics.add.collider(this.player, powerUps, function (powerUp) {
+            let player = this.player
+            player.powerUp('FiringSpeed', 30)
+            powerUp.destroyPUP()
+
         })
 
         this.physics.collide(worldFeatures)
@@ -413,11 +438,8 @@ export default class Game extends Phaser.Scene {
             }
             s.push('\n');
         }
-        // this.text.setText(s.join(''));
-        // onScreenDPad.x = this.player.x - 420
-        // onScreenDPad.y = this.player.y + 320
-        /**Ensure companion area fallows player around */
         
+        /**Ensure companion area fallows player around */
 
         worldFeatures.on('destroyed', function(worldFeature){
             let resCenter = worldFeature.getCenter()
@@ -493,6 +515,10 @@ export default class Game extends Phaser.Scene {
          * to move him, kept getting crashes due to the player being destoryed and
          * scene trying to set velocity to  0
          */
+        this.setamunga = 11
+        if (this.setamunga == 11) {
+            console.log(myBullets.defaultFrame = '16.png')
+        }
         if (!this.player.isAlive) {
             this.placeText.destroy()
             this.deadMessage.setDepth(10)
@@ -527,12 +553,13 @@ export default class Game extends Phaser.Scene {
             }
             else {
             myBullet = myBullets.get()
+            myBullet.speed = 1000
             if (myBullet) {
                 myBullet.on('destroy', MyBullet.whenDestroyed)
                 let mouseVector = new Phaser.Math.Vector2(this.mousePointer.worldX, this.mousePointer.worldY)
                 myBullet.body.setMass(100);
                 // myBullet.fire(this.player.getCenter(), mouseVector);
-                myBullet.fireJS(this.player.getCenter(), this.joySticks[1].rotation);
+                myBullet.fireJS(this.player.getCenter(), this.joySticks[1].rotation, this.player.firingSpeed);
                 }
             checkTime = 0;
             }

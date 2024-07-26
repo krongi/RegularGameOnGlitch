@@ -3,7 +3,7 @@ import Game from "../scenes/Game.js"
 
 export default class Bullet extends Phaser.Physics.Arcade.Image {
     
-    constructor(scene, x, y, imageKey, frame) {
+    constructor(scene, x, y, imageKey, frame, speed = 600) {
         super(scene, x, y, imageKey, frame)
         var lastFired = 0
         var isDown = false
@@ -11,7 +11,7 @@ export default class Bullet extends Phaser.Physics.Arcade.Image {
         this.incX = 0
         this.incY = 0
         this.lifeSpan = 0
-        this.speed = Phaser.Math.GetSpeed(600, 1)
+        this.speed = Phaser.Math.GetSpeed(speed, 1)
         
         
     
@@ -27,10 +27,12 @@ export default class Bullet extends Phaser.Physics.Arcade.Image {
         this.setRotation(angle)
         this.body.setSize(this.width * 0.25, this.height * 0.25)
         this.flipX = true
+        this.body.rotation = angle
         this.incX = Math.cos(angle)
         this.incY = Math.sin(angle)
-        this.body.isCircle = true
+        // this.body.isCircle = true
         this.lifeSpan = 1000
+        return this
 
     }
 
