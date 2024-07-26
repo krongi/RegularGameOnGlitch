@@ -34,7 +34,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.yDiff
         this.setBounce(.99, .99)
         this.setInteractive(true)
-        this.once('canFire', function(){console.log('from enemy to enemy')})
+        // this.once('canFire', function(){console.log('from enemy to enemy')})
         this.isAlive = true
     }
     

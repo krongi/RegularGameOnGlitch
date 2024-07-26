@@ -318,8 +318,8 @@ export default class Game extends Phaser.Scene {
             resource.setResource
             resource._resourceType = resource.resourceType
             player.incData(resource.resourceType, 25)
-            console.log(player.data.get(resource.resourceType))
-            console.log(resources.contains(resource.name))
+            // console.log(player.data.get(resource.resourceType))
+            // console.log(resources.contains(resource.name))
             resource.setActive(false)
             resource.setDepth(-1)
             resource.body.destroy()
@@ -369,9 +369,9 @@ export default class Game extends Phaser.Scene {
             enemyBullet.destroy()
         })
 
-        this.physics.add.collider(this.player, powerUps, function (powerUp) {
-            let player = this.player
-            player.powerUp('FiringSpeed', 30)
+        this.physics.add.collider(this.player, powerUps, function (player, powerUp) {
+            
+            player.firingSpeedUp()
             powerUp.destroyPUP()
 
         })
@@ -384,7 +384,7 @@ export default class Game extends Phaser.Scene {
         this.physics.add.collider(trees, mountains)
         
         this.events.on('worldFeatureDestroyed', function() {
-            console.log(worldFeature.name)
+            // console.log(worldFeature.name)
         })
        
         /* Create animations and text objects for game*/
@@ -439,6 +439,8 @@ export default class Game extends Phaser.Scene {
             s.push('\n');
         }
         
+        this.player.update(delta)
+
         /**Ensure companion area fallows player around */
 
         worldFeatures.on('destroyed', function(worldFeature){
@@ -515,10 +517,7 @@ export default class Game extends Phaser.Scene {
          * to move him, kept getting crashes due to the player being destoryed and
          * scene trying to set velocity to  0
          */
-        this.setamunga = 11
-        if (this.setamunga == 11) {
-            console.log(myBullets.defaultFrame = '16.png')
-        }
+        
         if (!this.player.isAlive) {
             this.placeText.destroy()
             this.deadMessage.setDepth(10)
@@ -557,7 +556,7 @@ export default class Game extends Phaser.Scene {
             if (myBullet) {
                 myBullet.on('destroy', MyBullet.whenDestroyed)
                 let mouseVector = new Phaser.Math.Vector2(this.mousePointer.worldX, this.mousePointer.worldY)
-                myBullet.body.setMass(100);
+                myBullet.body.setMass(this.player.ammoMass);
                 // myBullet.fire(this.player.getCenter(), mouseVector);
                 myBullet.fireJS(this.player.getCenter(), this.joySticks[1].rotation, this.player.firingSpeed);
                 }
